@@ -18,5 +18,6 @@ namespace CafeBoost.Data
         {
             return Adet * BirimFiyat;
         }
+        //public decimal Tutar() => Adet * BirimFiyat;
     }
 }

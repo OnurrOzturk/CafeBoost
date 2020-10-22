@@ -12,8 +12,8 @@ namespace CafeBoost.Data
         public decimal BirimFiyat { get; set; }
         public override string ToString()
         {
-            return UrunAd + " " + $"{BirimFiyat:0.00}TL";
-            //return string.Format(UrunAd + "({0:C2})", BirimFiyat);
+            return UrunAd + " " + $"({BirimFiyat:0.00}TL)";
+            //return string.Format("{0} ({1:0.00})TL"UrunAd, BirimFiyat);
         }
     }
 }

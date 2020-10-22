@@ -13,11 +13,28 @@ namespace CafeBoost.Data
         public DateTime? AcilisZamani { get; set; }
         public DateTime? KapanisZamani { get; set; }
         public SiparisDurum Durum { get; set; }
-        public string ToplamTutarTL { get { return $"{ToplamTutar():0.00}TL"; } }
+        public string ToplamTutarTL => $"{ToplamTutar():0.00}₺";
 
+        //public string ToplamTutarTL { get { return $"{ToplamTutar():0.00}TL"; } }
+
+        public Siparis()
+        {
+            SiparisDetaylar = new List<SiparisDetay>();
+            AcilisZamani = DateTime.Now;
+        }
         public decimal ToplamTutar()
         {
-            return  0;
+            return SiparisDetaylar.Sum(x => x.Tutar());
+
+            //decimal toplam = 0;
+            //foreach (var item in SiparisDetaylar)
+            //{
+            //    toplam += item.Adet * item.BirimFiyat;
+            //}
+            //return toplam;
         }
+
+        // Yukaridaki metot bu şekilde de tanımlanabilir
+        //public decimal ToplamTutar() => SiparisDetaylar.Sum(x => x.Tutar());
     }
 }
