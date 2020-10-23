@@ -24,12 +24,20 @@ namespace CafeBoost.UI
             db = kafeVeri;
             this.siparis = siparis;
             InitializeComponent();
+            dgvSiparisDetaylar.AutoGenerateColumns = false;
             UrunleriListele();
             MasaNoGuncelle();
             OdemeTutariGuncelle();
             blsiparisDetaylar = new BindingList<SiparisDetay>(siparis.SiparisDetaylar);
             blsiparisDetaylar.ListChanged += BlsiparisDetaylar_ListChanged;
             dgvSiparisDetaylar.DataSource = blsiparisDetaylar;
+
+            #region FormElemanAdıVerme
+            //dgvSiparisDetaylar.Columns[0].HeaderText = "Ürün Adı";
+            //dgvSiparisDetaylar.Columns[1].HeaderText = "Birim Fiyat";
+            //dgvSiparisDetaylar.Columns[2].HeaderText = "Adet";
+            //dgvSiparisDetaylar.Columns[3].HeaderText = "Tutar"; 
+            #endregion
 
         }
 
@@ -58,6 +66,7 @@ namespace CafeBoost.UI
         {
             Urun secilenUrun = (Urun)cboUrun.SelectedItem;
             int adet = (int)nudAdet.Value;
+
             SiparisDetay detay = new SiparisDetay()
             {
                 UrunAd = secilenUrun.UrunAd,
@@ -65,6 +74,24 @@ namespace CafeBoost.UI
                 Adet = adet
             };
             blsiparisDetaylar.Add(detay);
+
+            //SiparisDetay detay = blsiparisDetaylar.FirstOrDefault(x => x.UrunAd == secilenUrun.UrunAd);
+            //if (detay != null)
+            //{
+            //    detay.Adet += adet;
+            //    blsiparisDetaylar.ResetBindings();
+            //}
+            //else
+            //{
+            //    detay = new SiparisDetay()
+            //    {
+            //        UrunAd = secilenUrun.UrunAd,
+            //        BirimFiyat = secilenUrun.BirimFiyat,
+            //        Adet = adet
+            //    };
+            //    blsiparisDetaylar.Add(detay);
+            //}
+
             OdemeTutariGuncelle();
         }
 
@@ -76,6 +103,43 @@ namespace CafeBoost.UI
             {
                 e.Cancel = true;
             }
+        }
+
+        private void btnAnasayfa_Click(object sender, EventArgs e)
+        {
+            DialogResult = DialogResult.Cancel;
+            Close();
+        }
+
+        private void btnSiparisIptal_Click(object sender, EventArgs e)
+        {
+            DialogResult dr = MessageBox.Show("Sipariş iptal edilerek kapatılacaktır. Emin misiniz?", "İptal Onayı", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+
+            if (dr == DialogResult.Yes)
+            {
+                SiparisKapat(SiparisDurum.Iptal);
+            }
+        }
+
+        private void btnOdemeAl_Click(object sender, EventArgs e)
+        {
+            DialogResult dr = MessageBox.Show("Ödeme alındıysa sipariş kapatılacaktır. Emin misiniz?", "Ödeme Onayı", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+
+            if (dr == DialogResult.Yes)
+            {
+                SiparisKapat(SiparisDurum.Odendi, siparis.ToplamTutar());
+            }
+        }
+
+        private void SiparisKapat(SiparisDurum siparisDurum, decimal odenenTutar = 0)
+        {
+            siparis.OdenenTutar = odenenTutar;
+            siparis.KapanisZamani = DateTime.Now;
+            siparis.Durum = siparisDurum;
+            db.AktifSiparisler.Remove(siparis);
+            db.GecmisSiparisler.Add(siparis);
+            DialogResult = DialogResult.OK;
+            Close();
         }
     }
 }
