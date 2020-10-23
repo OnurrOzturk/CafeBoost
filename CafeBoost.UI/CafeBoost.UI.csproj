@@ -52,11 +52,11 @@
     <Compile Include="Anaform.Designer.cs">
       <DependentUpon>Anaform.cs</DependentUpon>
     </Compile>
-    <Compile Include="Ürünler.cs">
+    <Compile Include="UrunlerForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Ürünler.Designer.cs">
-      <DependentUpon>Ürünler.cs</DependentUpon>
+    <Compile Include="UrunlerForm.Designer.cs">
+      <DependentUpon>UrunlerForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -75,8 +75,8 @@
     <EmbeddedResource Include="Anaform.resx">
       <DependentUpon>Anaform.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Ürünler.resx">
-      <DependentUpon>Ürünler.cs</DependentUpon>
+    <EmbeddedResource Include="UrunlerForm.resx">
+      <DependentUpon>UrunlerForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
