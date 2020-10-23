@@ -80,6 +80,7 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Anaform";
             this.Text = "Cafe Boost";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Anaform_FormClosing_1);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);

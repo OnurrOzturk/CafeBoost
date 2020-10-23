@@ -79,7 +79,7 @@ namespace CafeBoost.UI
                     e.Cancel = true;
                 }
 
-                if (BaskaUrunVarMi(e.FormattedValue.ToString(), urun)) ;
+                if (BaskaUrunVarMi(e.FormattedValue.ToString(), urun));
                 {
                     MessageBox.Show("Ürün zaten mevcut.");
                     e.Cancel = true;
