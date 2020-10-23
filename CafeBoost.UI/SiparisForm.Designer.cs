@@ -271,6 +271,7 @@
             this.btnMasaTasi.TabIndex = 14;
             this.btnMasaTasi.Text = "TAŞI";
             this.btnMasaTasi.UseVisualStyleBackColor = true;
+            this.btnMasaTasi.Click += new System.EventHandler(this.btnMasaTasi_Click);
             // 
             // SiparisForm
             // 

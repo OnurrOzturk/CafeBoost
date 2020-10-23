@@ -15,19 +15,23 @@ namespace CafeBoost.UI
     {
         private readonly KafeVeri db;
         private readonly Siparis siparis;
+        private readonly Anaform anaForm;
         private readonly BindingList<SiparisDetay> blsiparisDetaylar;
 
-        public SiparisForm(KafeVeri kafeVeri, Siparis siparis)
+        public SiparisForm(KafeVeri kafeVeri, Siparis siparis, Anaform anaForm)
         {
             // constructor parametresi olarak gelen bu nesneleri
             // daha sonra da erişebileceğimiz field'lara aktarıyoruz
             db = kafeVeri;
             this.siparis = siparis;
+            this.anaForm = anaForm;
             InitializeComponent();
             dgvSiparisDetaylar.AutoGenerateColumns = false;
+            MasalariListele();
             UrunleriListele();
             MasaNoGuncelle();
             OdemeTutariGuncelle();
+
             blsiparisDetaylar = new BindingList<SiparisDetay>(siparis.SiparisDetaylar);
             blsiparisDetaylar.ListChanged += BlsiparisDetaylar_ListChanged;
             dgvSiparisDetaylar.DataSource = blsiparisDetaylar;
@@ -39,6 +43,19 @@ namespace CafeBoost.UI
             //dgvSiparisDetaylar.Columns[3].HeaderText = "Tutar"; 
             #endregion
 
+        }
+
+        private void MasalariListele()
+        {
+            cboMasalar.Items.Clear();
+
+            for (int i = 1; i <= db.MasaAdet; i++)
+            {
+                if (!db.AktifSiparisler.Any(x => x.MasaNo == i))
+                {
+                    cboMasalar.Items.Add(i);
+                }
+            }
         }
 
         private void BlsiparisDetaylar_ListChanged(object sender, ListChangedEventArgs e)
@@ -140,6 +157,17 @@ namespace CafeBoost.UI
             db.GecmisSiparisler.Add(siparis);
             DialogResult = DialogResult.OK;
             Close();
+        }
+
+        private void btnMasaTasi_Click(object sender, EventArgs e)
+        {
+            if (cboMasalar.SelectedIndex < 0) return;
+            int kaynak = siparis.MasaNo;
+            int hedef = (int)cboMasalar.SelectedItem;
+            siparis.MasaNo = hedef;
+            anaForm.MasaTasi(kaynak, hedef);
+            MasaNoGuncelle();
+            MasalariListele();
         }
     }
 }
