@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.Entity;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -20,6 +21,7 @@ namespace CafeBoost.UI
             db = cafeBoostContext;
             blUrunler = new BindingList<Urun>(db.Urunler.ToList());
             InitializeComponent();
+            dgvUrunler.AutoGenerateColumns = false;
             dgvUrunler.DataSource = blUrunler;
         }
 
@@ -41,11 +43,14 @@ namespace CafeBoost.UI
             // hata mesajını kaldırmak için
             errorProvider1.SetError(txtUrunAd, "");
 
-            blUrunler.Add(new Urun() 
-            { 
-                UrunAd = urunAd, 
-                BirimFiyat = nudBirimFiyat.Value 
-            });
+            Urun urun = new Urun()
+            {
+                UrunAd = urunAd,
+                BirimFiyat = nudBirimFiyat.Value
+            };
+            db.Urunler.Add(urun);
+            db.SaveChanges();
+            blUrunler.Add(urun);
 
             txtUrunAd.Clear();
             nudBirimFiyat.Value = 0;
@@ -79,7 +84,7 @@ namespace CafeBoost.UI
                     e.Cancel = true;
                 }
 
-                if (BaskaUrunVarMi(e.FormattedValue.ToString(), urun));
+                if (BaskaUrunVarMi(e.FormattedValue.ToString(), urun))
                 {
                     MessageBox.Show("Ürün zaten mevcut.");
                     e.Cancel = true;
@@ -88,7 +93,7 @@ namespace CafeBoost.UI
             else if (e.ColumnIndex == 1)
             {
                 decimal birimFiyat;
-                bool gecerliMi = decimal.TryParse(e.FormattedValue.ToString(), out birimFiyat);
+                bool gecerliMi = decimal.TryParse(e.FormattedValue.ToString().Replace("₺", ""), out birimFiyat);
 
                 if (!gecerliMi || birimFiyat < 0)
                 {
@@ -106,7 +111,25 @@ namespace CafeBoost.UI
         private bool BaskaUrunVarMi(string urunAd, Urun urun)
         {
             return db.Urunler.Any(
-                x => x.UrunAd.Equals(urunAd, StringComparison.CurrentCultureIgnoreCase) && x != urun);
+                x => x.UrunAd.Equals(urunAd, StringComparison.CurrentCultureIgnoreCase) && x.Id != urun.Id);
+        }
+
+        private void dgvUrunler_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
+        {
+            Urun urun = (Urun)e.Row.DataBoundItem;
+            if (urun.SiparisDetaylar.Any())
+            {
+                MessageBox.Show("Seçtiğiniz ürün mevcut ya da geçmiş siparişlerde yer aldığı için silinemez");
+                e.Cancel = true;
+                return;
+            }
+            db.Urunler.Remove(urun);
+            db.SaveChanges();
+        }
+
+        private void dgvUrunler_CellValidated(object sender, DataGridViewCellEventArgs e)
+        {
+            db.SaveChanges();
         }
     }
 }
