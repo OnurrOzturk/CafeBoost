@@ -67,6 +67,7 @@ namespace CafeBoost.UI
                 siparis = new Siparis();
                 siparis.MasaNo = masaNo;
                 db.Siparisler.Add(siparis);
+                db.SaveChanges();
                 lvwMasalar.SelectedItems[0].ImageKey = "dolu";
             }
 
