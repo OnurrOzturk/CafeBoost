@@ -69,7 +69,7 @@ namespace CafeBoost.UI
 
         private void UrunleriListele()
         {
-            cboUrun.DataSource = db.Urunler;
+            cboUrun.DataSource = db.Urunler.ToList();
         }
 
         private void MasaNoGuncelle()
@@ -85,30 +85,20 @@ namespace CafeBoost.UI
 
             SiparisDetay detay = new SiparisDetay()
             {
+                UrunId = secilenUrun.Id,
                 UrunAd = secilenUrun.UrunAd,
                 BirimFiyat = secilenUrun.BirimFiyat,
                 Adet = adet
             };
-            blsiparisDetaylar.Add(detay);
+            siparis.SiparisDetaylar.Add(detay);
+            db.SaveChanges();
+            SiparisDetaylarYenile();
+        }
 
-            //SiparisDetay detay = blsiparisDetaylar.FirstOrDefault(x => x.UrunAd == secilenUrun.UrunAd);
-            //if (detay != null)
-            //{
-            //    detay.Adet += adet;
-            //    blsiparisDetaylar.ResetBindings();
-            //}
-            //else
-            //{
-            //    detay = new SiparisDetay()
-            //    {
-            //        UrunAd = secilenUrun.UrunAd,
-            //        BirimFiyat = secilenUrun.BirimFiyat,
-            //        Adet = adet
-            //    };
-            //    blsiparisDetaylar.Add(detay);
-            //}
-
-            OdemeTutariGuncelle();
+        private void SiparisDetaylarYenile()
+        {
+            blsiparisDetaylar.Clear();
+            siparis.SiparisDetaylar.ToList().ForEach(x => blsiparisDetaylar.Add(x));
         }
 
         private void dgvSiparisDetaylar_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
